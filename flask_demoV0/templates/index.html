@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPS Data Visualization</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>GPS Data Visualization</h1>
+    <canvas id="gpsChart" width="400" height="200"></canvas>
+
+    <script>
+        var ctx = document.getElementById('gpsChart').getContext('2d');
+        var gpsChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Latitude',
+                    data: [],
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                    fill: false
+                }, {
+                    label: 'Longitude',
+                    data: [],
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1,
+                    fill: false
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Data Points'
+                        }
+                    },
+                    y: {
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: 'Value'
+                        }
+                    }
+                }
+            }
+        });
+
+        function updateChart() {
+            fetch('/gps_data')
+                .then(response => response.json())
+                .then(data => {
+                    gpsChart.data.labels = data.map((_, index) => index + 1);
+                    gpsChart.data.datasets[0].data = data.map(point => point.latitude);
+                    gpsChart.data.datasets[1].data = data.map(point => point.longitude);
+                    gpsChart.update();
+                });
+        }
+
+        setInterval(updateChart, 1000); // 每2秒更新一次数据
+    </script>
+</body>
+</html>

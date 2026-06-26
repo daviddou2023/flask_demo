@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>塔吊工人作业安全监管系统</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- 引入高德地图API -->
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=dca75fbd0390e9266a7f39814e1197c2"></script>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            text-align: center;
+            padding: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            background-color: #f8f9fa;
+        }
+        .container {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            height: 90%;  /* 剩余空间 */
+        }
+        .chart-container {
+            width: 25%;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            overflow-y: scroll;  /* 支持垂直滚动 */
+        }
+        .chart-item {
+            flex: 1;
+            margin-bottom: 10px;
+        }
+        .map-container {
+            width: 50%;
+            padding: 10px;
+        }
+        .empty-container {
+            width: 25%;
+            padding: 10px;
+        }
+        #mapContainer {
+            width: 100%;
+            height: 100%;
+        }
+        #healthData {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        塔吊工人作业安全监管系统
+    </div>
+    <div class="container">
+        <div class="chart-container">
+            <div class="chart-item">
+                <canvas id="co2Chart"></canvas>
+            </div>
+            <div class="chart-item">
+                <canvas id="ch2oChart"></canvas>
+            </div>
+            <div class="chart-item">
+                <canvas id="tvocChart"></canvas>
+            </div>
+            <div class="chart-item">
+                <canvas id="pm25Chart"></canvas>  <!-- 新增PM2.5折线图 -->
+            </div>
+            <div class="chart-item">
+                <canvas id="pm10Chart"></canvas>  <!-- 新增PM10折线图 -->
+            </div>
+            <div class="chart-item">
+                <canvas id="tempChart"></canvas>  <!-- 新增温度折线图 -->
+            </div>
+            <div class="chart-item">
+                <canvas id="humChart"></canvas>  <!-- 新增湿度折线图 -->
+            </div>
+        </div>
+        <div class="map-container">
+            <div id="mapContainer"></div>
+        </div>
+        <div class="empty-container">
+            <!-- 右侧空白区域，新增心率和血氧数据 -->
+            <div id="healthData">
+                <p>心率：<span id="heartRate">--</span> BPM</p>
+                <p>血氧：<span id="spo2">--</span>%</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        function fetchHealthData() {
+            fetch('/health_data')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('heartRate').textContent = data.heart_rate ? data.heart_rate : "--";
+                    document.getElementById('spo2').textContent = data.spo2 ? data.spo2 : "--";
+                })
+                .catch(error => console.error('Error fetching health data:', error));
+        }
+
+        // 每5秒更新一次心率和血氧数据
+        setInterval(fetchHealthData, 5000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensor Data Visualization</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>实时传感器数据</h1>
+    <div>
+        <p>CO2: <span id="co2">Loading...</span></p>
+        <p>CH2O: <span id="ch2o">Loading...</span></p>
+        <p>TVOC: <span id="tvoc">Loading...</span></p>
+        <p>PM2.5: <span id="pm2_5">Loading...</span></p>
+        <p>PM10: <span id="pm10">Loading...</span></p>
+        <p>Temperature: <span id="temp">Loading...</span></p>
+        <p>Humidity: <span id="hum">Loading...</span></p>
+        <p>Timestamp: <span id="timestamp">Loading...</span></p>
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

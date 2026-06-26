@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="static/css/index.css">
+    <title>塔吊工人作业安全监管系统</title>
+    <script src="static/js/jquery-2.2.1.min.js"></script>
+    <script src="static/js/rem.js"></script>
+    <script src="static/js/echarts.min.js"></script>
+    <script src="static/js/guangxi.js"></script>
+    <script src="static/js/index.js"></script>
+    <style>
+        /* 添加用于显示时间的样式 */
+        .t_time {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 16px;
+            color: #fff;
+
+        }
+        .clock-container {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+    <script>
+        // 定义一个函数来更新显示时间
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('currentTime').innerText = timeString;
+        }
+        // 定义一个函数来绘制钟表
+        function drawClock() {
+            const canvas = document.getElementById('clockCanvas');
+            const ctx = canvas.getContext('2d');
+            const now = new Date();
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // 清空画布
+
+            // 绘制表盘
+            ctx.beginPath();
+            ctx.arc(50, 50, 45, 0, 2 * Math.PI);
+            ctx.stroke();
+
+            // 绘制刻度
+            for (let i = 0; i < 12; i++) {
+                const angle = i * 30 * Math.PI / 180;
+                ctx.moveTo(50 + 40 * Math.cos(angle), 50 + 40 * Math.sin(angle));
+                ctx.lineTo(50 + 45 * Math.cos(angle), 50 + 45 * Math.sin(angle));
+            }
+            ctx.stroke();
+
+            // 绘制时针
+            const hour = now.getHours() % 12;
+            const minute = now.getMinutes();
+            const second = now.getSeconds();
+            const hourAngle = (hour + minute / 60) * 30 * Math.PI / 180;
+            ctx.beginPath();
+            ctx.moveTo(50, 50);
+            ctx.lineTo(50 + 25 * Math.cos(hourAngle - Math.PI / 2), 50 + 25 * Math.sin(hourAngle - Math.PI / 2));
+            ctx.stroke();
+
+            // 绘制分针
+            const minuteAngle = (minute + second / 60) * 6 * Math.PI / 180;
+            ctx.beginPath();
+            ctx.moveTo(50, 50);
+            ctx.lineTo(50 + 35 * Math.cos(minuteAngle - Math.PI / 2), 50 + 35 * Math.sin(minuteAngle - Math.PI / 2));
+            ctx.stroke();
+
+            // 绘制秒针
+            const secondAngle = second * 6 * Math.PI / 180;
+            ctx.beginPath();
+            ctx.moveTo(50, 50);
+            ctx.lineTo(50 + 40 * Math.cos(secondAngle - Math.PI / 2), 50 + 40 * Math.sin(secondAngle - Math.PI / 2));
+            ctx.strokeStyle = 'red';
+            ctx.stroke();
+            ctx.strokeStyle = '#000'; // 恢复默认颜色
+        }
+
+        // 页面加载后，开始更新时间
+        $(document).ready(function() {
+            updateTime(); // 初始调用一次
+            setInterval(updateTime, 1000); // 每秒更新一次
+        });
+    </script>
+</head>
+<body>
+    <div class="t_container">
+        <header class="t_header">
+            <span>塔吊工人作业安全监管系统</span>
+
+        </header>
+        <main class="t_main">
+            <div class="t_left_box">
+                <img class="t_l_line" src="static/img/left_line.png" alt="更多资源：https://gitee.com/iGaoWei/big-data-view">
+                <div class="t_mbox t_rbox" >
+                    <i></i>
+                    <span>重度风险</span>
+                    <h2>1</h2>
+                </div>
+                <div class="t_mbox t_gbox">
+                    <i></i>
+                    <span>中度风险</span>
+                    <h2>1</h2>
+                </div>
+                <div class="t_mbox t_ybox">
+                    <i></i>
+                    <span>轻度风险</span>
+                    <h2>1</h2>
+                </div>
+                <img class="t_r_line" src="static/img/right_line.png" alt="更多资源：https://gitee.com/iGaoWei/big-data-view">
+            </div>
+            <div class="t_center_box">
+                <div class="t_top_box">
+                    <img class="t_l_line" src="static/img/left_line.png" alt="更多资源：https://gitee.com/iGaoWei/big-data-view">
+                    <ul class="t_nav">
+                        <li>
+                            <span>塔吊数</span>
+                            <h1>5</h1>
+                            <i></i>
+                        </li>
+                        <li>
+                            <span>在线塔吊数</span>
+                            <h1>5</h1>
+                            <i></i>
+                        </li>
+                        <li>
+                            <span>在线率</span>
+                            <h1>100%</h1>
+                        </li>
+                    </ul>
+                    <img class="t_r_line" src="static/img/right_line.png" alt="更多资源：https://gitee.com/iGaoWei/big-data-view">
+                </div>
+                <div class="t_bottom_box">
+                    <img class="t_l_line" src="static/img/left_line.png" alt="更多资源：https://gitee.com/iGaoWei/big-data-view">
+                    <div id="chart_3" class="echart" style="width: 100%; height: 3.6rem;"></div>
+                    <img class="t_r_line" src="static/img/right_line.png" alt="更多资源：https://gitee.com/iGaoWei/big-data-view">
+                </div>
+            </div>
+            <div class="t_right_box">
+                    <img class="t_l_line" src="static/img/left_line.png" alt="更多资源：https://gitee.com/iGaoWei/big-data-view">
+                    <div id="chart_4" class="echart" style="width: 50%; height: 4.6rem; position: absolute;"></div>
+
+<!--                    <header class="t_b_h">-->
+                    <div id="currentTime" class="t_time"></div> <!-- 显示时间的元素 -->
+                        <div class="clock-container">
+                    <canvas id="clockCanvas" width="100" height="100"></canvas>
+                </div>
+<!--                    </header>-->
+
+                    <img class="t_r_line" src="static/img/right_line.png" alt="更多资源：https://gitee.com/iGaoWei/big-data-view">
+            </div>
+            <div class="b_left_box">
+                    <img class="t_l_line" src="static/img/left_line.png" alt="更多资源：https://gitee.com/iGaoWei/big-data-view">
+                    <div id="chart_2" class="echart" style="width: 100%; height: 3.6rem;"></div>
+                    <img class="t_r_line" src="static/img/right_line.png" alt="更多资源：https://gitee.com/iGaoWei/big-data-view">
+            </div>
+            <div class="b_center_box">
+                    <img class="t_l_line" src="static/img/left_line.png" alt="更多资源：https://gitee.com/iGaoWei/big-data-view">
+                    <div id="chart_1" class="echart" style="width: 100%; height: 3.6rem;"></div>
+                    <img class="t_r_line" src="static/img/right_line.png" alt="更多资源：https://gitee.com/iGaoWei/big-data-view">
+            </div>
+            <div class="b_right_box">
+                    <img class="t_l_line" src="static/img/left_line.png" alt="更多资源：https://gitee.com/iGaoWei/big-data-view">
+                    <h1 class="t_title">塔吊历史工作情况</h1>
+                    <table class="t_table">
+                        <thead>
+                            <tr>
+                                <th>塔吊设备号</th>
+                                <th>风险等级</th>
+                                <th>时间</th>
+                                <th>查看情况</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1号塔吊</td>
+                                <td>重度风险</td>
+                                <td>13:40:10</td>
+                                <td><a href="#" onclick="window.location.href='/index'">点击查看</a></td>
+
+                            </tr>
+                            <tr>
+                                <td>2号塔吊</td>
+                                <td>无风险</td>
+                                <td>13:40:12</td>
+                                <td>点击查看</td>
+                            </tr>
+                            <tr>
+                                <td>3号塔吊</td>
+                                <td>中度风险</td>
+                                <td>13:40:14</td>
+                                <td>点击查看</td>
+                            </tr>
+                            <tr>
+                                <td>4号塔吊</td>
+                                <td>轻度风险</td>
+                                <td>13:40:16</td>
+                                <td>点击查看</td>
+                            </tr>
+                            <tr>
+                                <td>5号塔吊</td>
+                                <td>无风险</td>
+                                <td>13:40:18</td>
+                                <td>点击查看</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <img class="t_r_line" src="static/img/right_line.png" alt="更多资源：https://gitee.com/iGaoWei/big-data-view">
+            </div>
+        </main>
+    </div>
+</body>
+</html>

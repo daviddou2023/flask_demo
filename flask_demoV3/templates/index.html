@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Environmental Data and GPS Visualization</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- 引入高德地图API -->
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=dca75fbd0390e9266a7f39814e1197c2"></script>
+</head>
+<body>
+    <div style="width: 80%; margin: auto;">
+        <canvas id="lineChart"></canvas>
+    </div>
+
+    <div id="mapContainer" style="width: 80%; height: 500px; margin: 20px auto;"></div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
